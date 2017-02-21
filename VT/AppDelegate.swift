@@ -8,16 +8,19 @@
 
 import UIKit
 import CoreData
+import Foundation
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+//        deleteContext()
+        
         return true
+
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -53,7 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
          application to it. This property is optional since there are legitimate
          error conditions that could cause the creation of the store to fail.
         */
-        let container = NSPersistentContainer(name: "VT")
+        let container = NSPersistentContainer(name: "Model")
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 // Replace this implementation with code to handle the error appropriately.
@@ -75,7 +78,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     // MARK: - Core Data Saving support
 
-    func saveContext () {
+    func saveContext() {
         let context = persistentContainer.viewContext
         if context.hasChanges {
             do {
@@ -87,6 +90,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 fatalError("Unresolved error \(nserror), \(nserror.userInfo)")
             }
         }
+    }
+    
+    
+    func deleteContext() {
+        
+        let context = persistentContainer.viewContext
+        
+        if let persistentStoreCoordinator = context.persistentStoreCoordinator {
+            
+            if let store = persistentStoreCoordinator.persistentStores.last{
+                
+                let storeUrl = persistentStoreCoordinator.url(for: store)
+                
+                persistentContainer.viewContext.performAndWait(){
+                    
+                    self.persistentContainer.viewContext.reset()
+                    
+                    if ((try? persistentStoreCoordinator.remove(store)) != nil) {
+                        try? FileManager.default.removeItem(at: storeUrl)
+                        _ = try? persistentStoreCoordinator.addPersistentStore(ofType: NSSQLiteStoreType, configurationName: nil, at: storeUrl, options: nil)
+                    }
+                }
+            }
+        }
+        
     }
 
 }
