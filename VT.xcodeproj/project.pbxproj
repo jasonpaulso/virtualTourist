@@ -16,6 +16,8 @@
 		9E758FD41E591F0200865E75 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E758FD31E591F0200865E75 /* Helpers.swift */; };
 		9E758FD61E5920E400865E75 /* CollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E758FD51E5920E400865E75 /* CollectionViewController.swift */; };
 		9E758FF91E5933E300865E75 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E758FF81E5933E300865E75 /* CollectionViewCell.swift */; };
+		9E83A3DF1E5CF39F00C72FA3 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E83A3DE1E5CF39F00C72FA3 /* MapViewController.swift */; };
+		9E83A3E11E5CF3C300C72FA3 /* PinAnnotationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E83A3E01E5CF3C300C72FA3 /* PinAnnotationView.swift */; };
 		BE61B1AFA9476B0D24C96267 /* Pods_VT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 550C94BCBFFE98BF89A4F9AC /* Pods_VT.framework */; };
 /* End PBXBuildFile section */
 
@@ -34,6 +36,8 @@
 		9E758FD31E591F0200865E75 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		9E758FD51E5920E400865E75 /* CollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewController.swift; sourceTree = "<group>"; };
 		9E758FF81E5933E300865E75 /* CollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
+		9E83A3DE1E5CF39F00C72FA3 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		9E83A3E01E5CF3C300C72FA3 /* PinAnnotationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PinAnnotationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +81,8 @@
 		9E758FB61E591E6B00865E75 /* VT */ = {
 			isa = PBXGroup;
 			children = (
+				9E83A3E01E5CF3C300C72FA3 /* PinAnnotationView.swift */,
+				9E83A3DE1E5CF39F00C72FA3 /* MapViewController.swift */,
 				9E758FD31E591F0200865E75 /* Helpers.swift */,
 				9E758FD11E591EF800865E75 /* Constants.swift */,
 				9E758FB71E591E6B00865E75 /* AppDelegate.swift */,
@@ -238,6 +244,8 @@
 				9E758FB81E591E6B00865E75 /* AppDelegate.swift in Sources */,
 				9E758FD41E591F0200865E75 /* Helpers.swift in Sources */,
 				9E758FD21E591EF800865E75 /* Constants.swift in Sources */,
+				9E83A3DF1E5CF39F00C72FA3 /* MapViewController.swift in Sources */,
+				9E83A3E11E5CF3C300C72FA3 /* PinAnnotationView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

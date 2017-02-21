@@ -114,7 +114,7 @@ class FlickrHandler {
     
     func getPinPhotos(completionHandlerForConvertData: (_ result: [Photo]?, _ error: String?) -> Void) {
         
-        if let retrievedPin = managedContext.object(with: (currentPin?.objectID)!) as? Pin {
+        if let retrievedPin = getContext().object(with: (currentPin?.objectID)!) as? Pin {
             
             photos = retrievedPin.photos?.array as! [Photo]
             
@@ -222,11 +222,82 @@ class FlickrHandler {
         return components.url!
     }
     
+}
+
+// Mark Data Handling
+
+extension  CollectionViewController {
     
+    func storePin(latitude: Double, longitude: Double) -> NSManagedObject {
+        
+        let pin = Pin(context: managedContext)
+        
+        let latitude = latitude
+        
+        let longitude = longitude
+        
+        pin.latitude = latitude
+        
+        pin.longitude = longitude
+        
+        do {
+            try managedContext.save()
+            
+            self.currentPin = pin
+            
+            flickrHandler.currentPin = self.currentPin
+            
+            flickrHandler.taskForGETImagesByPin(completionHandlerForImageData: {result, _ in
+                
+                self.flickrHandler.getPinPhotos(completionHandlerForConvertData: {result,_ in
+                    
+                    self.photos = result!
+                    
+                    print(self.photos)
+                    
+//                    self.photosCollectionView.reloadData()
+                    
+                })
+            })
+            
+            
+        } catch let error as NSError  {
+            
+            print("Could not save \(error), \(error.userInfo)")
+            
+        }
+        
+        return pin
+    }
     
-    
-    
-    
+    func fetchPins() {
+        
+        let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
+        
+        do {
+            let results = try managedContext.fetch(fetchRequest)
+            
+            if results.count > 0 {
+                
+                pins = results
+                
+                currentPin = pins.first
+                
+                self.flickrHandler.getPinPhotos(completionHandlerForConvertData: { result, _ in
+                    
+                    self.photos = result!
+                    
+                    self.photosCollectionView.reloadData()
+                    
+                })
+            }
+        } catch let error as NSError {
+            
+            print("Fetch error: \(error) description: \(error.userInfo)")
+            
+        }
+        
+    }
     
 }
 
