@@ -1,76 +1,113 @@
+////
+////  CollectionViewController.swift
+////  VT
+////
+////  Created by Jason Southwell on 2/18/17.
+////  Copyright © 2017 Jason Southwell. All rights reserved.
+////
 //
-//  CollectionViewController.swift
-//  VT
+//import UIKit
+//import CoreData
+//import Alamofire
 //
-//  Created by Jason Southwell on 2/18/17.
-//  Copyright © 2017 Jason Southwell. All rights reserved.
+//private let reuseIdentifier = "collectionViewCell"
 //
-
-import UIKit
-import CoreData
-import Alamofire
-
-private let reuseIdentifier = "collectionViewCell"
-
-class CollectionViewController: UICollectionViewController {
-    
-    let coordinates = [(36.1540,95.9928), (37.7749,122.4194), (59.3293,18.0686)]
-    
-    var currentPin: Pin?
-    var pins: [Pin] = []
-    var photos: [Photo] = []
-    var managedContext = getContext()
-    
-    let flickrHandler = FlickrHandler()
-    
-    @IBOutlet var photosCollectionView: UICollectionView!
-    
-    override func viewDidLoad() {
-        
-        super.viewDidLoad()
-        
-        flickrHandler.currentPin = currentPin
-        
-        flickrHandler.getPinPhotos(completionHandlerForConvertData: { result, error in
-            
-            photos = result!
-            
-            self.photosCollectionView.reloadData()
-        
-        })
-        
-        
-//        fetchPins()
-        
-//        let randomIndex = Int(arc4random_uniform(UInt32(coordinates.count)))
-        
-//        storePin(latitude: coordinates[randomIndex].0, longitude: coordinates[randomIndex].1)
-        
-    }
-    
-    
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
-        return photos.count
-    }
-    
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! CollectionViewCell
-        
-        let photo = photos[indexPath.row]
-        
-        if photo.photo != nil {
-            
-            let image = UIImage(data: photo.photo! as Data)
-            
-            cell.imageView?.image = image
-            
-        }
-        
-        return cell
-    }
-    
-    
-}
-
+//class CollectionViewController: UICollectionViewController, NSFetchedResultsControllerDelegate {
+//    
+//    var currentPin: Pin?
+//    
+////    lazy var photos: [Photo] = []
+//    
+//    let flickrHandler = FlickrHandler()
+//    
+//    @IBOutlet var photosCollectionView: UICollectionView!
+//    
+////    @IBOutlet var photosCollectionView: UICollectionView!
+//    
+//    var fetchedResultsController: NSFetchedResultsController<Pin>!
+//    
+//    override func viewDidLoad() {
+//        
+//        super.viewDidLoad()
+//        
+////        collectionView?.delegate = self
+//        
+//        flickrHandler.currentPin = currentPin
+//        
+//        NotificationCenter.default.addObserver(self, selector: #selector(reloadCollectionView), name:NSNotification.Name(reloadNotification), object: nil)
+//        
+//        
+//    }
+//    
+//    var cells: Int?
+//    
+//    func reloadCollectionView() -> Void {
+//        
+//        DispatchQueue.main.async {
+//
+//            self.collectionView?.reloadData()
+//            
+//        }
+//    
+//    }
+//    
+//    @IBOutlet var activityIndicator: UIActivityIndicatorView!
+//
+//    
+//    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+//        
+//        return (currentPin?.photos?.count)!
+//    }
+//    
+//    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+//        
+//        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! CollectionViewCell
+//        let photo = self.currentPin?.photos?[indexPath.row] as! Photo
+//        cell.imageView?.image = UIImage(data: photo.photo! as Data)
+//        return cell
+//    }
+//    
+//    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        
+//        let photo = currentPin?.photos?[indexPath.row] as! Photo
+//        
+//        getContext().delete(photo)
+//        
+//        do {
+//            try getContext().save()
+//            
+//            reloadCollectionView()
+//            
+//        } catch  {
+//            
+//            print("Cannot delete photo")
+//            
+//        }
+//        
+//       
+//    }
+//    
+//    
+//    
+//    
+//}
+//
+//extension UIImageView {
+//    public func imageFromServerURL(urlString: String) {
+//        
+//        URLSession.shared.dataTask(with: NSURL(string: urlString)! as URL, completionHandler: { (data, response, error) -> Void in
+//            
+//            if error != nil {
+//                print(error!)
+//                return
+//            }
+//            DispatchQueue.main.async(execute: { () -> Void in
+//                let image = UIImage(data: data!)
+//                self.image = image
+//            })
+//            
+//        }).resume()
+//    }
+//}
+//
+//

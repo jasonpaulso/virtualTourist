@@ -24,7 +24,11 @@ class PinAnnotation : MKAnnotationView, MKAnnotation {
     var subtitle: String?
     var objectID: NSManagedObjectID?
     
+    
+    
+    
     func setCoordinate(newCoordinate: CLLocationCoordinate2D) {
         self.coord = newCoordinate
+
     }
 }
