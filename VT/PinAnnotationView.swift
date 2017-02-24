@@ -21,14 +21,18 @@ class PinAnnotation : MKAnnotationView, MKAnnotation {
     }
     
     var title: String?
+    
     var subtitle: String?
+    
     var objectID: NSManagedObjectID?
     
     
     
     
     func setCoordinate(newCoordinate: CLLocationCoordinate2D) {
+        
         self.coord = newCoordinate
 
     }
 }
+

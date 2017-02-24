@@ -12,17 +12,13 @@ import UIKit
 import CoreData
 
 
-public func getContext() -> NSManagedObjectContext {
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    return appDelegate.persistentContainer.viewContext
-}
-
 public let reloadNotification = "reload"
 
 class FlickrHandler {
     
     var currentPin: Pin?
-    var photos = [Photo]()
+    
+//    var photos = [Photo]()
     
     let managedContext = getContext()
     
@@ -32,82 +28,42 @@ class FlickrHandler {
             
             let photo = Photo(context: managedContext)
             
-            photo.url = (passedPhoto["url_m"] as! String)
-            
-            photo.text = (passedPhoto["title"] as! String)
-            
-            photo.photo = NSData(contentsOf: URL(string: photo.url!)!)
-            
-            passedPin.addToPhotos(photo)
-            
-            do {
-                try managedContext.save()
+            if let url = (passedPhoto["url_l"] as? String), let text = (passedPhoto["title"] as? String) {
+                
+                print(passedPhoto)
+                
+                photo.url = url
+                
+                photo.text = text
+                
+                photo.photo = NSData(contentsOf: URL(string: photo.url!)!)
+                
+                passedPin.addToPhotos(photo)
+                
+                
+                do {
+                    try managedContext.save()
+                    
+                    NotificationCenter.default.post(name: NSNotification.Name(reloadNotification), object: nil)
+                    
+                } catch let error as NSError {
+                    
+                    print("Save error: \(error), description: \(error.userInfo)")
+                    
+                    
+                }
                 
                 completionHandlerForConvertData((currentPin?.photos?.array as! [Photo]), nil)
-                
-                NotificationCenter.default.post(name: NSNotification.Name(reloadNotification), object: nil)
-                
-            } catch let error as NSError {
-                
-                print("Save error: \(error), description: \(error.userInfo)")
-                
-                
             }
-        }
-        
-        
-    }
-    
-//    func storePhotoByPin(passedPhoto: [String: AnyObject], passedPin: Pin) -> Photo {
-//        
-//            let photo = Photo(context: managedContext)
-//            
-//            photo.url = (passedPhoto["url_m"] as! String)
-//            
-//            photo.text = (passedPhoto["title"] as! String)
-//            
-//            photo.photo = NSData(contentsOf: URL(string: photo.url!)!)
-//            
-//            passedPin.addToPhotos(photo)
-//        
-//        do {
-//            try managedContext.save()
-//            
-//            print(currentPin?.photos?.count as Any)
-//            
-//        } catch let error as NSError {
-//            
-//            print("Save error: \(error), description: \(error.userInfo)")
-//            
-//            
-//        }
-//        return photo
-//    }
 
-    
-    
-    
-    func getPinPhotos(completionHandlerForConvertData: @escaping (_ result: [Photo]?, _ error: String?) -> Void) {
-        
+            }
             
-            if let retrievedPin = getContext().object(with: (self.currentPin?.objectID)!) as? Pin {
-                
-                self.photos = retrievedPin.photos?.array as! [Photo]
-                
-                completionHandlerForConvertData(self.photos, nil)
-                
-            }
-                
-            else {
-                
-                print("Can't find object.")
-                
-            }
         
     }
     
+    var page = 1
     
-    func taskForGETImagesByPin(completionHandlerForImageData: @escaping (_ result: [Photo], _ error: String?) -> Void) {
+    func taskForGETImagesByPin(page: Int = 1, completionHandlerForImageData: @escaping (_ result: [Photo], _ error: String?) -> Void) {
         
         let queue = DispatchQueue(label: "com.cnoon.response-queue", qos: .utility, attributes: [.concurrent])
         
@@ -116,10 +72,11 @@ class FlickrHandler {
             Constants.FlickrParameterKeys.APIKey: Constants.FlickrParameterValues.APIKey,
             Constants.FlickrParameterKeys.BoundingBox: bboxString(latitude: (currentPin?.latitude)!, longitude: (currentPin?.longitude)!),
             Constants.FlickrParameterKeys.SafeSearch: Constants.FlickrParameterValues.UseSafeSearch,
-            Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.MediumURL,
+            Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.LargeURL,
             Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat,
             Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback,
-            Constants.FlickrParameterKeys.PerPage: "25"
+            Constants.FlickrParameterKeys.PerPage: "30",
+            Constants.FlickrParameterKeys.Page: String(page)
         ]
         
         let url = flickrURLFromParameters(methodParameters as [String : AnyObject])
@@ -142,10 +99,13 @@ class FlickrHandler {
                     if let result = response.result.value {
                         let JSON = result as! NSDictionary
                         
+                        
                         guard let photosDictionary = JSON[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject] else {
                             print("Cannot find key '\(Constants.FlickrResponseKeys.Photos)' in \(JSON)")
                             return
                         }
+                        print("CURRENT PAGE", page)
+                        print("PAGES", photosDictionary[Constants.FlickrResponseKeys.Pages]!)
                         
                         /* GUARD: Is the "photo" key in photosDictionary? */
                         guard let photosArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
@@ -159,6 +119,7 @@ class FlickrHandler {
                             completionHandlerForImageData(result!, nil)
                             
                         })
+                        
                     }
             })
         
@@ -226,6 +187,13 @@ class FlickrHandler {
             return pin
         }
         
+}
+
+
+
+public func getContext() -> NSManagedObjectContext {
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+    return appDelegate.persistentContainer.viewContext
 }
 
 

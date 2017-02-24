@@ -9,7 +9,22 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>BSGridCollectionViewLayout.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>ImageScrollView.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>Pods-VT.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
+		<key>SimpleAnimation.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -17,12 +32,27 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>00C7205E78DA1A579342DA3046597DF6</key>
+		<key>6930D5D0C3440426432777093903702D</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
 		<key>88E9EC28B8B46C3631E6B242B50F4442</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>C9849776A9AECB890BB46D36C5A03CA9</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>D277BD801FE765172567A7D2A03703E8</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>DA7784E74D1BFF419790CC15877BB381</key>
 		<dict>
 			<key>primary</key>
 			<true/>

@@ -7,4 +7,8 @@ target 'VT' do
 
   # Pods for VT
     pod 'Alamofire'
+    pod 'BSGridCollectionViewLayout'
+    pod 'ImageScrollView'
+    pod ‘SimpleAnimation’
+ 
 end

@@ -13,24 +13,37 @@ import MapKit
 import CoreLocation
 import SystemConfiguration
 
-class MapViewController: UIViewController, MKMapViewDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate {
     
     let flickrHandler = FlickrHandler()
     
-    var pins: [Pin] = []
-    
     @IBOutlet var mapView: MKMapView!
     
+    var annotation: MKPointAnnotation!
+    
     override func viewDidLoad() {
+        
+        mapView.tintColor = .gray
+        
         mapView.delegate = self
+        
         super.viewDidLoad()
         
-        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(gestureRecognizer:)))
-        gesture.minimumPressDuration = 1.5
-        
-        mapView.addGestureRecognizer(gesture)
+//        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(gestureRecognizer:)))
+//        
+//        gesture.minimumPressDuration = 1
+//        
+//        mapView.addGestureRecognizer(gesture)
         
         fetchPins()
+        
+        let gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(addPin(gestureRecognizer:)))
+        
+        gestureRecognizer.numberOfTouchesRequired = 1
+        
+        mapView.addGestureRecognizer(gestureRecognizer)
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -43,6 +56,8 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
     }
     
+
+    
     func fetchPins() {
         
         let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
@@ -52,17 +67,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
             
             if results.count > 0 {
                 
-                pins = results
-                
-                print(pins.count)
+                let pins = results
                 
                 for pin in pins {
+                    
                     let coord = CLLocationCoordinate2D(latitude: pin.latitude, longitude: pin.longitude)
                     let annotation = PinAnnotation()
                     annotation.setCoordinate(newCoordinate: coord)
                     annotation.title = pin.name
                     annotation.objectID = pin.objectID
                     mapView.addAnnotation(annotation)
+                    
                 }
                 mapView.reloadInputViews()
             }
@@ -75,19 +90,34 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         
     }
     
-    func addAnnotation(gestureRecognizer:UIGestureRecognizer){
+    func addPin(gestureRecognizer:UIGestureRecognizer){
+        
+        let touchPoint = gestureRecognizer.location(in: mapView)
+        let newCoordinates = mapView.convert(touchPoint, toCoordinateFrom: mapView)
+        
+        if annotation != nil {
+            annotation.coordinate = newCoordinates
+        }
         
         if gestureRecognizer.state == UIGestureRecognizerState.began {
+            
             let touchPoint = gestureRecognizer.location(in: mapView)
+            
             let newCoordinates = mapView.convert(touchPoint, toCoordinateFrom: mapView)
+            
             let annotation = PinAnnotation()
+            
             
             annotation.setCoordinate(newCoordinate: newCoordinates)
             
             CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude), completionHandler: {(placemarks, error) -> Void in
+                
                 if error != nil {
+                    
                     print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
+                    
                     return
+                    
                 }
                 
                 if (placemarks?.count)! > 0 {
@@ -98,31 +128,78 @@ class MapViewController: UIViewController, MKMapViewDelegate {
                     let longitude = pm.location!.coordinate.longitude
                     let title = pm.locality ?? "Unknown Territory"
                     
-                    print(pm)
-                    
                     let pin = self.flickrHandler.storePin(latitude: latitude, longitude: longitude, name: title) as! Pin
                     
-                  
-                        
-                    self.flickrHandler.taskForGETImagesByPin(completionHandlerForImageData: {result, _ in
-                            
-                        self.flickrHandler.getPinPhotos(completionHandlerForConvertData: {result,_ in
-                           
-//                            print("called in mvc")
-                        })
-                    })
-            
+                    self.flickrHandler.taskForGETImagesByPin(completionHandlerForImageData: {_, _ in })
+                    
                     
                     annotation.title = pin.name
                     
                     annotation.objectID = pin.objectID
-
+                    
                     self.mapView.addAnnotation(annotation)
                     
                 } else {
                     annotation.title = "Unknown Place"
+                    
                     self.mapView.addAnnotation(annotation)
+                    
                     print("Problem with the data received from geocoder")
+                    
+                }
+                
+            })
+        }
+    }
+    
+    func addAnnotation(gestureRecognizer:UIGestureRecognizer){
+        
+        if gestureRecognizer.state == UIGestureRecognizerState.began {
+            
+            let touchPoint = gestureRecognizer.location(in: mapView)
+            
+            let newCoordinates = mapView.convert(touchPoint, toCoordinateFrom: mapView)
+            
+            let annotation = PinAnnotation()
+            
+            annotation.setCoordinate(newCoordinate: newCoordinates)
+            
+            CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: newCoordinates.latitude, longitude: newCoordinates.longitude), completionHandler: {(placemarks, error) -> Void in
+                
+                if error != nil {
+                    
+                    print("Reverse geocoder failed with error" + (error?.localizedDescription)!)
+                    
+                    return
+                    
+                }
+                
+                if (placemarks?.count)! > 0 {
+                    
+                    let pm = (placemarks?[0])! as CLPlacemark
+                    
+                    let latitude = pm.location!.coordinate.latitude
+                    let longitude = pm.location!.coordinate.longitude
+                    let title = pm.locality ?? "Unknown Territory"
+                    
+                    let pin = self.flickrHandler.storePin(latitude: latitude, longitude: longitude, name: title) as! Pin
+                    
+                    self.flickrHandler.taskForGETImagesByPin(completionHandlerForImageData: {_, _ in })
+                    
+                    
+                    annotation.title = pin.name
+                    
+                    annotation.objectID = pin.objectID
+                    
+                    self.mapView.addAnnotation(annotation)
+                    
+                } else {
+                    annotation.title = "Unknown Place"
+                    
+                    self.mapView.addAnnotation(annotation)
+                    
+                    print("Problem with the data received from geocoder")
+                    
                 }
                 
             })
@@ -130,29 +207,44 @@ class MapViewController: UIViewController, MKMapViewDelegate {
     }
     
     
+    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        let identifier = "Pin"
         
         if annotation is PinAnnotation {
-            let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "myPin")
             
-            pinAnnotationView.isDraggable = true
-            pinAnnotationView.canShowCallout = true
-            pinAnnotationView.animatesDrop = true
-            
-            pinAnnotationView.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
-            
-            return pinAnnotationView
+            if let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) {
+                
+                annotationView.annotation = annotation
+                
+                return annotationView
+                
+            } else {
+                
+                let annotationView = MKPinAnnotationView(annotation:annotation, reuseIdentifier: identifier)
+                
+                annotationView.isEnabled = true
+                
+                annotationView.canShowCallout = true
+                
+                annotationView.animatesDrop = true
+                
+                annotationView.pinTintColor = .blue
+                
+                let btn = UIButton(type: .detailDisclosure)
+                
+                annotationView.rightCalloutAccessoryView = btn
+                
+                return annotationView
+            }
         }
         
         return nil
-        
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
         if let annotation = view.annotation as? PinAnnotation {
-            
-//            let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "collectionViewController") as! CollectionViewController
             
             let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "viewController") as! CollectionViewController
             
@@ -184,7 +276,17 @@ class MapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
+        switch newState {
+        case .starting:
+            view.dragState = .dragging
+        case .ending, .canceling:
+            view.dragState = .none
+        default: break
+        }
+    }
     
+   
     
 }
 

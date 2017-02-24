@@ -48,6 +48,7 @@ struct Constants {
         static let GalleryPhotosMethod = "flickr.galleries.getPhotos"
         static let GalleryID = "5704-72157622566655097"
         static let MediumURL = "url_m"
+        static let LargeURL = "url_l"
         static let UseSafeSearch = "1"
         
     }
