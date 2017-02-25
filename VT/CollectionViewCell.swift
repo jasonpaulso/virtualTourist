@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import Alamofire
+import AlamofireImage
 
 class CollectionViewCell: UICollectionViewCell {
     
@@ -15,6 +17,6 @@ class CollectionViewCell: UICollectionViewCell {
     @IBOutlet var imageView: UIImageView!
     
     let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.gray)
-
+    
     
 }

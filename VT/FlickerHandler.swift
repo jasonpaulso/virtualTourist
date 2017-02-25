@@ -18,48 +18,7 @@ class FlickrHandler {
     
     var currentPin: Pin?
     
-//    var photos = [Photo]()
-    
     let managedContext = getContext()
-    
-    func storePhotosByPin(passedPhotos: [[String: AnyObject]], passedPin: Pin, completionHandlerForConvertData: (_ result: [Photo]?, _ error: String?) -> Void) {
-        
-        for passedPhoto in passedPhotos {
-            
-            let photo = Photo(context: managedContext)
-            
-            if let url = (passedPhoto["url_l"] as? String), let text = (passedPhoto["title"] as? String) {
-                
-                print(passedPhoto)
-                
-                photo.url = url
-                
-                photo.text = text
-                
-                photo.photo = NSData(contentsOf: URL(string: photo.url!)!)
-                
-                passedPin.addToPhotos(photo)
-                
-                
-                do {
-                    try managedContext.save()
-                    
-                    NotificationCenter.default.post(name: NSNotification.Name(reloadNotification), object: nil)
-                    
-                } catch let error as NSError {
-                    
-                    print("Save error: \(error), description: \(error.userInfo)")
-                    
-                    
-                }
-                
-                completionHandlerForConvertData((currentPin?.photos?.array as! [Photo]), nil)
-            }
-
-            }
-            
-        
-    }
     
     var page = 1
     
@@ -112,90 +71,71 @@ class FlickrHandler {
                             print("Cannot find key '\(Constants.FlickrResponseKeys.Photo)' in \(photosDictionary)")
                             return
                         }
- 
                         
-                        self.storePhotosByPin(passedPhotos: photosArray, passedPin: self.currentPin!, completionHandlerForConvertData: {result,_ in
-                            
-                            completionHandlerForImageData(result!, nil)
-                            
-                        })
+                        PhotoPinModelHandler().storePhotosByPin(passedPhotos: photosArray, passedPin: self.currentPin!)
                         
                     }
             })
         
+    }
+    
+    fileprivate func bboxString(latitude: Double, longitude: Double) -> String {
+        
+        let latitude = latitude
+        let longitude = longitude
+        let minimumLon = max(longitude - Constants.Flickr.SearchBBoxHalfWidth, Constants.Flickr.SearchLonRange.0)
+        let minimumLat = max(latitude - Constants.Flickr.SearchBBoxHalfHeight, Constants.Flickr.SearchLatRange.0)
+        let maximumLon = min(longitude + Constants.Flickr.SearchBBoxHalfWidth, Constants.Flickr.SearchLonRange.1)
+        let maximumLat = min(latitude + Constants.Flickr.SearchBBoxHalfHeight, Constants.Flickr.SearchLatRange.1)
+        return "\(minimumLon),\(minimumLat),\(maximumLon),\(maximumLat)"
+    }
+    
+    fileprivate func flickrURLFromParameters(_ parameters: [String:AnyObject]) -> URL {
+        
+        let APIScheme = "https"
+        let APIHost = "api.flickr.com"
+        let APIPath = "/services/rest"
+        
+        var components = URLComponents()
+        components.scheme = APIScheme
+        components.host = APIHost
+        components.path = APIPath
+        components.queryItems = [URLQueryItem]()
+        
+        for (key, value) in parameters {
+            let queryItem = URLQueryItem(name: key, value: "\(value)")
+            components.queryItems!.append(queryItem)
         }
         
-        fileprivate func bboxString(latitude: Double, longitude: Double) -> String {
+        return components.url!
+    }
+    
+    
+    func loadMorePhotos(currentPin: Pin) {
+        
+        
+        page += 1
+        
+        currentPin.photos = nil
+        
+        do {
             
-            let latitude = latitude
-            let longitude = longitude
-            let minimumLon = max(longitude - Constants.Flickr.SearchBBoxHalfWidth, Constants.Flickr.SearchLonRange.0)
-            let minimumLat = max(latitude - Constants.Flickr.SearchBBoxHalfHeight, Constants.Flickr.SearchLatRange.0)
-            let maximumLon = min(longitude + Constants.Flickr.SearchBBoxHalfWidth, Constants.Flickr.SearchLonRange.1)
-            let maximumLat = min(latitude + Constants.Flickr.SearchBBoxHalfHeight, Constants.Flickr.SearchLatRange.1)
-            return "\(minimumLon),\(minimumLat),\(maximumLon),\(maximumLat)"
+            try getContext().save()
+            
+            
+        } catch  {
+            
+            print("Cannot delete photos")
+            
+            return
         }
         
-        fileprivate func flickrURLFromParameters(_ parameters: [String:AnyObject]) -> URL {
-            
-            let APIScheme = "https"
-            let APIHost = "api.flickr.com"
-            let APIPath = "/services/rest"
-            
-            var components = URLComponents()
-            components.scheme = APIScheme
-            components.host = APIHost
-            components.path = APIPath
-            components.queryItems = [URLQueryItem]()
-            
-            for (key, value) in parameters {
-                let queryItem = URLQueryItem(name: key, value: "\(value)")
-                components.queryItems!.append(queryItem)
-            }
-            
-            return components.url!
-        }
+        self.taskForGETImagesByPin(page: page, completionHandlerForImageData: {_, _ in})
         
-        func storePin(latitude: Double, longitude: Double, name: String) -> NSManagedObject {
-            
-            let pin = Pin(context: getContext())
-            
-            let latitude = latitude
-            
-            let longitude = longitude
-            
-            let name = name
-            
-            pin.latitude = latitude
-            
-            pin.longitude = longitude
-            
-            pin.name = name
-            
-            do {
-                try getContext().save()
-                
-                currentPin = pin
-                
-                
-            } catch let error as NSError  {
-                
-                print("Could not save \(error), \(error.userInfo)")
-                
-            }
-            
-            return pin
-        }
-        
+    }
+    
+    
 }
-
-
-
-public func getContext() -> NSManagedObjectContext {
-    let appDelegate = UIApplication.shared.delegate as! AppDelegate
-    return appDelegate.persistentContainer.viewContext
-}
-
 
 
 

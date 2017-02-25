@@ -9,6 +9,11 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
+		<key>AlamofireImage.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+		</dict>
 		<key>BSGridCollectionViewLayout.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -32,6 +37,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>3DD3EBCBFEC89A4AF74141D5EB785277</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>6930D5D0C3440426432777093903702D</key>
 		<dict>
 			<key>primary</key>
@@ -42,12 +52,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>C9849776A9AECB890BB46D36C5A03CA9</key>
+		<key>9EFE4C70245EE2857D336B8B9FA4E825</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>D277BD801FE765172567A7D2A03703E8</key>
+		<key>BA3FDF84CB338AB5A284711EEA99E79A</key>
 		<dict>
 			<key>primary</key>
 			<true/>

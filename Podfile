@@ -10,5 +10,6 @@ target 'VT' do
     pod 'BSGridCollectionViewLayout'
     pod 'ImageScrollView'
     pod ‘SimpleAnimation’
+    pod ‘AlamofireImage’
  
 end

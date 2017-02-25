@@ -15,25 +15,25 @@ import SystemConfiguration
 
 class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate {
     
-    let flickrHandler = FlickrHandler()
-    
     @IBOutlet var mapView: MKMapView!
     
-    var annotation: MKPointAnnotation!
+    @IBAction func favoritesButtonClicked(_ sender: Any) {
+        
+        let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "collectionViewController") as! PhotoAlbumViewController
+        
+        viewController.predicate = NSPredicate(format: "isFavorite == %@", NSNumber(booleanLiteral: true))
+        
+        viewController.passedTitle = "Favorites"
+        
+        navigationController?.pushViewController(viewController, animated: true)
+        
+    }
     
     override func viewDidLoad() {
         
-        mapView.tintColor = .gray
-        
-        mapView.delegate = self
-        
         super.viewDidLoad()
         
-//        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(gestureRecognizer:)))
-//        
-//        gesture.minimumPressDuration = 1
-//        
-//        mapView.addGestureRecognizer(gesture)
+        mapView.delegate = self
         
         fetchPins()
         
@@ -42,23 +42,34 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
         gestureRecognizer.numberOfTouchesRequired = 1
         
         mapView.addGestureRecognizer(gestureRecognizer)
-        
+       
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         
         DispatchQueue.main.async {
-            for item in self.mapView.selectedAnnotations {
-                self.mapView.deselectAnnotation(item, animated: false)
+            
+            if self.mapView.selectedAnnotations.count != 0 {
+                
+                for item in self.mapView.selectedAnnotations {
+
+                    self.mapView.deselectAnnotation(item, animated: false)
+                }
             }
+            
         }
+
         
     }
     
+    let flickrHandler = FlickrHandler()
+    let modelHandler = PhotoPinModelHandler()
+    var annotation: MKPointAnnotation!
+    
 
     
-    func fetchPins() {
+    private func fetchPins() {
         
         let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
         
@@ -79,7 +90,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
                     mapView.addAnnotation(annotation)
                     
                 }
+                
                 mapView.reloadInputViews()
+                
             }
             
         } catch let error as NSError {
@@ -90,13 +103,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
         
     }
     
-    func addPin(gestureRecognizer:UIGestureRecognizer){
+    @objc private func addPin(gestureRecognizer:UIGestureRecognizer){
         
         let touchPoint = gestureRecognizer.location(in: mapView)
         let newCoordinates = mapView.convert(touchPoint, toCoordinateFrom: mapView)
         
         if annotation != nil {
+            
             annotation.coordinate = newCoordinates
+            
         }
         
         if gestureRecognizer.state == UIGestureRecognizerState.began {
@@ -127,11 +142,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
                     let latitude = pm.location!.coordinate.latitude
                     let longitude = pm.location!.coordinate.longitude
                     let title = pm.locality ?? "Unknown Territory"
-                    
-                    let pin = self.flickrHandler.storePin(latitude: latitude, longitude: longitude, name: title) as! Pin
-                    
+                    let pin = self.modelHandler.storePin(latitude: latitude, longitude: longitude, name: title) as! Pin
+
+                    self.flickrHandler.currentPin = pin
+
                     self.flickrHandler.taskForGETImagesByPin(completionHandlerForImageData: {_, _ in })
-                    
                     
                     annotation.title = pin.name
                     
@@ -140,6 +155,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
                     self.mapView.addAnnotation(annotation)
                     
                 } else {
+                    
                     annotation.title = "Unknown Place"
                     
                     self.mapView.addAnnotation(annotation)
@@ -152,7 +168,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
         }
     }
     
-    func addAnnotation(gestureRecognizer:UIGestureRecognizer){
+    private func addAnnotation(gestureRecognizer:UIGestureRecognizer){
         
         if gestureRecognizer.state == UIGestureRecognizerState.began {
             
@@ -182,18 +198,19 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
                     let longitude = pm.location!.coordinate.longitude
                     let title = pm.locality ?? "Unknown Territory"
                     
-                    let pin = self.flickrHandler.storePin(latitude: latitude, longitude: longitude, name: title) as! Pin
-                    
-                    self.flickrHandler.taskForGETImagesByPin(completionHandlerForImageData: {_, _ in })
-                    
-                    
-                    annotation.title = pin.name
-                    
-                    annotation.objectID = pin.objectID
-                    
-                    self.mapView.addAnnotation(annotation)
+                    if let pin = self.modelHandler.storePin(latitude: latitude, longitude: longitude, name: title) as? Pin {
+                        
+                        self.flickrHandler.taskForGETImagesByPin(completionHandlerForImageData: {_, _ in })
+                        
+                        annotation.title = pin.name
+                        
+                        annotation.objectID = pin.objectID
+                        
+                        self.mapView.addAnnotation(annotation)
+                    }
                     
                 } else {
+                    
                     annotation.title = "Unknown Place"
                     
                     self.mapView.addAnnotation(annotation)
@@ -205,10 +222,9 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
             })
         }
     }
+
     
-    
-    
-    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+    internal func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         let identifier = "Pin"
         
         if annotation is PinAnnotation {
@@ -242,11 +258,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
         return nil
     }
     
-    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+    internal func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         
         if let annotation = view.annotation as? PinAnnotation {
             
-            let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "viewController") as! CollectionViewController
+            let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "collectionViewController") as! PhotoAlbumViewController
             
             if let retrievedPin = getContext().object(with: (annotation.objectID)!) as? Pin {
                 
@@ -259,11 +275,11 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
         }
     }
     
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+    internal func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         
         if let annotation = view.annotation as? PinAnnotation {
             
-            let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "collectionViewController") as! CollectionViewController
+            let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "collectionViewController") as! PhotoAlbumViewController
             
             if let retrievedPin = getContext().object(with: (annotation.objectID)!) as? Pin {
                 
@@ -276,17 +292,6 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
         }
     }
     
-    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
-        switch newState {
-        case .starting:
-            view.dragState = .dragging
-        case .ending, .canceling:
-            view.dragState = .none
-        default: break
-        }
-    }
-    
-   
     
 }
 
