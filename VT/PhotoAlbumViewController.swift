@@ -85,12 +85,12 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         
         if predicate != nil {
             
-            reloadButton.isHidden = true
+            reloadButtonOutlet.isEnabled = false
             
         } else if Int16(flickrHandler.page) == (currentPin?.numberOfPages)! {
             
             self.reloadLabel.isHidden = true
-            self.reloadButton.isHidden = true
+            reloadButtonOutlet.isEnabled = false
             
         } else if (fetchedResultsController?.fetchedObjects?.count)! > 1 {
             
@@ -146,7 +146,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         
         favoritesLabel.isHidden = false
         
-        reloadButtonOutlet.isEnabled = false
+//        reloadButtonOutlet.isEnabled = false
     
     }
 
@@ -193,7 +193,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     private func reloadImageCollection() {
         reloadLabel.isHidden = true
 
-        self.reloadButton.isHidden = true
+        reloadButtonOutlet.isEnabled = false
 
         flickrHandler.loadMorePhotos(currentPin: currentPin!, withCompletion: { _, error in
 
@@ -201,7 +201,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
                 if error == nil {
 
                     self.reloadLabel.isHidden = false
-                    self.reloadButton.isHidden = false
+                    self.reloadButtonOutlet.isEnabled = true
                     self.refreshControl.endRefreshing()
                     
                     if (self.fetchedResultsController?.fetchedObjects!.count)! < 1 {

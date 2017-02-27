@@ -138,33 +138,30 @@ class FlickrHandler {
 
     func downloadImageData(photo: Photo) {
 
-        let serialQueue = DispatchQueue(label: "com.queue.Serial")
-
-        serialQueue.async {
-
-            Alamofire.request(photo.url!).responseData(completionHandler: { response in
-
-                if let status = response.response?.statusCode {
-                    switch status {
-                    case 200: break
-                    default:
-                        print("error with response status: \(status)")
+        
+            DispatchQueue.main.async {
+                Alamofire.request(photo.url!).responseData(completionHandler: { response in
+                    
+                    if let status = response.response?.statusCode {
+                        switch status {
+                        case 200: break
+                        default:
+                            print("error with response status: \(status)")
+                        }
                     }
-                }
-
-                if let data = response.result.value {
-
-                    let photoData = NSData(data: data)
-
-                    photo.photo = photoData
-
-                    self.appDelegate?.saveContext()
-
-                }
-
-            })
-
-        }
+                    
+                    if let data = response.result.value {
+                        
+                        let photoData = NSData(data: data)
+                        
+                        photo.photo = photoData
+                        
+                        self.appDelegate?.saveContext()
+                        
+                    }
+                    
+                })
+            }
 
     }
 
