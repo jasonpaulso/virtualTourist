@@ -42,19 +42,23 @@ class FlickrHandler {
                     }
 
                     if let result = response.result.value {
+                        
                         let JSON = result as? NSDictionary
 
                         guard let placesDictionary = JSON?["places"] as? [String:AnyObject] else {
-                            print("Cannot find key places in \(String(describing: JSON))")
+                            let error = ("Cannot find key places in \(String(describing: JSON))")
+                            completionHandler(("nil", "nil"), error)
                             return
                         }
                         guard let placeArray = placesDictionary["place"] as? [[String:AnyObject]] else {
-                            print("Cannot find key place in \(placesDictionary)")
+                            let error = ("Cannot find key place in \(placesDictionary)")
+                            completionHandler(("nil", "nil"), error)
                             return
                         }
 
                         guard let place = placeArray.first else {
-                            print("Cannot find key placeID in \(placeArray)")
+                            let error = ("Cannot find key placeID in \(placeArray)")
+                            completionHandler(("nil", "nil"), error)
                             return
                         }
 
@@ -91,14 +95,16 @@ class FlickrHandler {
                         let JSON = result as? NSDictionary
 
                         guard let photosDictionary = JSON?["photos"] as? [String:AnyObject] else {
-                            print("Cannot find key 'photos' in \(String(describing: JSON))")
+                            let error = ("Cannot find key 'photos' in \(String(describing: JSON))")
+                            completionHandlerForImageData(true, error)
                             return
                         }
 
                         let pages = photosDictionary["pages"]!.int16Value!
 
                         guard let photosArray = photosDictionary["photo"] as? [[String: AnyObject]] else {
-                            print("Cannot find key 'photo' in \(photosDictionary)")
+                            let error = ("Cannot find key 'photo' in \(photosDictionary)")
+                            completionHandlerForImageData(true, error)
                             return
                         }
 

@@ -63,42 +63,34 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
 
         loadPhotoData()
         
-        if fetchedResultsController?.fetchedObjects!.count == 0 {
-            showEmptyCollectionAlert()
-            context?.delete(currentPin!)
-        }
-
+    
         setUpLongPress()
-
-        if predicate != nil && fetchedResultsController?.fetchedObjects?.count == 0 {
-
-            favoritesLabel.text = "You don't have any favorites yet. You can add to your favorites using Peek & Pop in the main image galleries."
-        } else {
-
-            favoritesLabel.text = nil
-
-        }
-
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
         
-
         if predicate != nil {
-
+            
             reloadButton.isHidden = true
-
+            
         } else if Int16(flickrHandler.page) == (currentPin?.numberOfPages)! {
-
+            
             self.reloadLabel.isHidden = true
             self.reloadButton.isHidden = true
-
-        } else {
-
+            
+        } else if predicate != nil && fetchedResultsController?.fetchedObjects?.count == nil {
+            
+            self.collectionView.isHidden = true
+            
+            favoritesLabel.text = "You don't have any favorites yet. You can add to your favorites using Peek & Pop in the main image galleries."
+            
+        } else if fetchedResultsController?.fetchedObjects?.count != nil {
+            
             startCallToActionTimer()
-        }
+            favoritesLabel.isHidden = true
+            favoritesLabel.text = "There is nothing more to see here. Go out and explore!"
 
+        }
+        
     }
+
 
     var insertedIndexPaths: [NSIndexPath]!
     var deletedIndexPaths: [NSIndexPath]!
@@ -128,12 +120,23 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
 
         return true
     }
+    
+    private func setUpEmptyCollectionView() {
+        
+        
+        collectionView.willRemoveSubview(refreshControl)
+        timer.invalidate()
+//        showEmptyCollectionAlert()
+//        favoritesLabel.text = "There is nothing more to see here. Go out and explore!"
+        favoritesLabel.isHidden = false
+        reloadLabel.isHidden = true
+        reloadButton.isHidden = true
+        context?.delete(currentPin!)
+    }
 
     private func startCallToActionTimer() {
 
         self.createRefreshControl()
-
-        self.collectionView.hop(toward: .bottom, amount: 0.15, duration: 4.0, delay: 1.0, completion: { _ in})
 
         self.timer = Timer.scheduledTimer(withTimeInterval: 180, repeats: incrementBounceCounter(), block: { _ in
 
@@ -191,9 +194,9 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
                     self.reloadButton.isHidden = false
                     self.refreshControl.endRefreshing()
                     
-                    if self.fetchedResultsController?.fetchedObjects!.count == 0 {
-                        self.showEmptyCollectionAlert()
-                        self.context?.delete(self.currentPin!)
+                    if self.fetchedResultsController?.fetchedObjects!.count == nil {
+                        
+                        self.setUpEmptyCollectionView()
                     }
 
                 }
@@ -217,6 +220,13 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     internal func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 
         let section = self.fetchedResultsController?.sections![section]
+        
+        if section!.numberOfObjects == 0 {
+            
+            setUpEmptyCollectionView()
+            
+            
+        }
 
         return section!.numberOfObjects
 

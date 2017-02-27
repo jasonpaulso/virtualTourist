@@ -13,7 +13,7 @@ import MapKit
 import CoreLocation
 import SystemConfiguration
 
-class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate {
+class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognizerDelegate, ShowsAlert {
 
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
 
@@ -167,15 +167,41 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
                     let latitude = pm.location!.coordinate.latitude
                     let longitude = pm.location!.coordinate.longitude
 
-                    self.modelHandler.storePin(latitude: latitude, longitude: longitude, completionHandler: {pin, _ in
+                    self.modelHandler.storePin(latitude: latitude, longitude: longitude, completionHandler: {pin, error in
+                        
+                        if error == nil {
+                            
+                            annotation.title = pin.name
+                            
+                            annotation.objectID = pin.objectID
+                            
+                            self.mapView.addAnnotation(annotation)
+                            
+                            self.flickrHandler.taskForGETImagesByPin(pin: pin, page: self.flickrHandler.page, completionHandlerForImageData: {_, error in
+                            
+                                if error != nil {
+                                    
+                                    self.context?.delete(pin)
+                                    
+                                    DispatchQueue.main.async {
+                                        
+                                        self.showEmptyCollectionAlert()
+                                        
+                                        self.mapView.removeAnnotation(annotation)
 
-                        annotation.title = pin.name
-
-                        annotation.objectID = pin.objectID
-
-                        self.mapView.addAnnotation(annotation)
-
-                        self.flickrHandler.taskForGETImagesByPin(pin: pin, page: self.flickrHandler.page, completionHandlerForImageData: {_, _ in })
+                                    }
+                                    
+                                    return
+                                    
+                                }
+                            
+                            })
+                            
+                        } else {
+                            
+                            self.showEmptyCollectionAlert()
+                            
+                        }
 
                     })
 

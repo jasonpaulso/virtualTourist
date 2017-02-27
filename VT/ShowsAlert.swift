@@ -32,7 +32,7 @@ extension ShowsAlert where Self: UIViewController {
 
             let deleteFromFavoriteAction = UIAlertAction(title: "OK", style: .destructive, handler: {_ in
 
-                passedPhoto.isFavorite = true
+                passedPhoto.isFavorite = false
 
                 PhotoPinModelHandler().deleteSelectedImage(photo: passedPhoto)
 
@@ -71,5 +71,7 @@ extension ShowsAlert where Self: UIViewController {
         
         self.present(alert, animated: true, completion: nil)
     }
+    
+    
 
 }
