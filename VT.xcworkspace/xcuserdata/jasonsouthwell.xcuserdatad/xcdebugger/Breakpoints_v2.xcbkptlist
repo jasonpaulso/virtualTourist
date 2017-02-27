@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "VT/PinAnnotationView.swift"
-            timestampString = "509504949.769585"
+            timestampString = "509851085.410586"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "28"
-            endingLineNumber = "28"
+            startingLineNumber = "29"
+            endingLineNumber = "29"
             landmarkName = "PinAnnotation"
             landmarkType = "3">
          </BreakpointContent>

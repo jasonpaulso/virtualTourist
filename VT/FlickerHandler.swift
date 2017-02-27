@@ -11,132 +11,157 @@ import Alamofire
 import UIKit
 import CoreData
 
-
 public let reloadNotification = "reload"
 
 class FlickrHandler {
-    
-    var currentPin: Pin?
-    
-    let managedContext = getContext()
-    
+
+    //    var currentPin: Pin?
+
+    let appDelegate = UIApplication.shared.delegate as? AppDelegate
+
     var page = 1
-    
-    func taskForGETImagesByPin(page: Int = 1, completionHandlerForImageData: @escaping (_ result: [Photo], _ error: String?) -> Void) {
-        
-        let queue = DispatchQueue(label: "com.cnoon.response-queue", qos: .utility, attributes: [.concurrent])
-        
-        let methodParameters = [
-            Constants.FlickrParameterKeys.Method: Constants.FlickrParameterValues.SearchMethod,
-            Constants.FlickrParameterKeys.APIKey: Constants.FlickrParameterValues.APIKey,
-            Constants.FlickrParameterKeys.BoundingBox: bboxString(latitude: (currentPin?.latitude)!, longitude: (currentPin?.longitude)!),
-            Constants.FlickrParameterKeys.SafeSearch: Constants.FlickrParameterValues.UseSafeSearch,
-            Constants.FlickrParameterKeys.Extras: Constants.FlickrParameterValues.LargeURL,
-            Constants.FlickrParameterKeys.Format: Constants.FlickrParameterValues.ResponseFormat,
-            Constants.FlickrParameterKeys.NoJSONCallback: Constants.FlickrParameterValues.DisableJSONCallback,
-            Constants.FlickrParameterKeys.PerPage: "30",
-            Constants.FlickrParameterKeys.Page: String(page)
-        ]
-        
-        let url = flickrURLFromParameters(methodParameters as [String : AnyObject])
-        
+
+    func taskForGETPlaceID(latitude: Double, longitude: Double, completionHandler: @escaping (_ result: (String, String), _ error: String?) -> Void) {
+
+        let lat = String(describing: latitude)
+
+        let long = String(describing: longitude)
+
+        let url = "https://api.flickr.com/services/rest/?method=flickr.places.findByLatLon&api_key=d242cd151d22b912ae2d878c19ec8209&lat=\(lat)&lon=\(long)&accuracy=10&format=json&nojsoncallback=1"
+
         Alamofire.request(url)
-            .response(
-                queue: queue,
-                responseSerializer: DataRequest.jsonResponseSerializer(),
+            .responseJSON(
                 completionHandler: { response in
-                    // You are now running on the concurrent `queue` you created earlier.
+
                     if let status = response.response?.statusCode {
-                        switch(status){
-                        case 200:
-                            print("success")
+                        switch status {
+                        case 200: break
                         default:
                             print("error with response status: \(status)")
                         }
                     }
-                    
+
                     if let result = response.result.value {
-                        let JSON = result as! NSDictionary
-                        
-                        
-                        guard let photosDictionary = JSON[Constants.FlickrResponseKeys.Photos] as? [String:AnyObject] else {
-                            print("Cannot find key '\(Constants.FlickrResponseKeys.Photos)' in \(JSON)")
+                        let JSON = result as? NSDictionary
+
+                        guard let placesDictionary = JSON?["places"] as? [String:AnyObject] else {
+                            print("Cannot find key places in \(String(describing: JSON))")
                             return
                         }
-                        print("CURRENT PAGE", page)
-                        print("PAGES", photosDictionary[Constants.FlickrResponseKeys.Pages]!)
-                        
-                        /* GUARD: Is the "photo" key in photosDictionary? */
-                        guard let photosArray = photosDictionary[Constants.FlickrResponseKeys.Photo] as? [[String: AnyObject]] else {
-                            print("Cannot find key '\(Constants.FlickrResponseKeys.Photo)' in \(photosDictionary)")
+                        guard let placeArray = placesDictionary["place"] as? [[String:AnyObject]] else {
+                            print("Cannot find key place in \(placesDictionary)")
                             return
                         }
-                        
-                        PhotoPinModelHandler().storePhotosByPin(passedPhotos: photosArray, passedPin: self.currentPin!)
-                        
+
+                        guard let place = placeArray.first else {
+                            print("Cannot find key placeID in \(placeArray)")
+                            return
+                        }
+
+                        let placeID = place["place_id"] as? String
+                        let placeName = place["name"] as? String
+                        let placeDetails = (placeID!, placeName!)
+
+                        completionHandler(placeDetails, nil)
+                    }
+
+            })
+
+    }
+
+    func taskForGETImagesByPin(pin: Pin, page: Int = 1, completionHandlerForImageData: @escaping (_ result: Bool?, _ error: String?) -> Void) {
+
+        let queue = DispatchQueue(label: "com.cnoon.response-queue", qos: .utility, attributes: [.concurrent])
+
+        let url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=d242cd151d22b912ae2d878c19ec8209&safe_search=1&place_id=\(pin.placeID!)&extras=url_m&per_page=30&page=\(String(page))&format=json&nojsoncallback=1&accuracy=16"
+
+        Alamofire.request(url)
+            .responseJSON(
+                queue: queue,
+                completionHandler: { response in
+                    if let status = response.response?.statusCode {
+                        switch status {
+                        case 200: break
+                        default:
+                            print("error with response status: \(status)")
+                        }
+                    }
+
+                    if let result = response.result.value {
+                        let JSON = result as? NSDictionary
+
+                        guard let photosDictionary = JSON?["photos"] as? [String:AnyObject] else {
+                            print("Cannot find key 'photos' in \(String(describing: JSON))")
+                            return
+                        }
+
+                        let pages = photosDictionary["pages"]!.int16Value!
+
+                        guard let photosArray = photosDictionary["photo"] as? [[String: AnyObject]] else {
+                            print("Cannot find key 'photo' in \(photosDictionary)")
+                            return
+                        }
+
+                        PhotoPinModelHandler().storePhotosByPin(passedPhotos: photosArray, passedPin: pin, pages: pages)
+
+                        completionHandlerForImageData(true, nil)
+
                     }
             })
-        
+
     }
-    
-    fileprivate func bboxString(latitude: Double, longitude: Double) -> String {
-        
-        let latitude = latitude
-        let longitude = longitude
-        let minimumLon = max(longitude - Constants.Flickr.SearchBBoxHalfWidth, Constants.Flickr.SearchLonRange.0)
-        let minimumLat = max(latitude - Constants.Flickr.SearchBBoxHalfHeight, Constants.Flickr.SearchLatRange.0)
-        let maximumLon = min(longitude + Constants.Flickr.SearchBBoxHalfWidth, Constants.Flickr.SearchLonRange.1)
-        let maximumLat = min(latitude + Constants.Flickr.SearchBBoxHalfHeight, Constants.Flickr.SearchLatRange.1)
-        return "\(minimumLon),\(minimumLat),\(maximumLon),\(maximumLat)"
-    }
-    
-    fileprivate func flickrURLFromParameters(_ parameters: [String:AnyObject]) -> URL {
-        
-        let APIScheme = "https"
-        let APIHost = "api.flickr.com"
-        let APIPath = "/services/rest"
-        
-        var components = URLComponents()
-        components.scheme = APIScheme
-        components.host = APIHost
-        components.path = APIPath
-        components.queryItems = [URLQueryItem]()
-        
-        for (key, value) in parameters {
-            let queryItem = URLQueryItem(name: key, value: "\(value)")
-            components.queryItems!.append(queryItem)
-        }
-        
-        return components.url!
-    }
-    
-    
-    func loadMorePhotos(currentPin: Pin) {
-        
-        
+
+    func loadMorePhotos(currentPin: Pin, withCompletion completion: @escaping (_ result: Bool?, _ error: String?) -> Void) {
+
         page += 1
-        
-        currentPin.photos = nil
-        
-        do {
-            
-            try getContext().save()
-            
-            
-        } catch  {
-            
-            print("Cannot delete photos")
-            
-            return
+
+        if currentPin.photos != nil {
+
+            currentPin.photos = nil
         }
-        
-        self.taskForGETImagesByPin(page: page, completionHandlerForImageData: {_, _ in})
-        
+
+        self.taskForGETImagesByPin(pin: currentPin, page: self.page, completionHandlerForImageData: {result, error in
+
+            if error == nil {
+
+                completion(true, nil)
+
+            }
+
+        })
+
     }
-    
-    
+
+    func downloadImageData(photo: Photo) {
+
+        let serialQueue = DispatchQueue(label: "com.queue.Serial")
+
+        serialQueue.async {
+
+            Alamofire.request(photo.url!).responseData(completionHandler: { response in
+
+                if let status = response.response?.statusCode {
+                    switch status {
+                    case 200: break
+                    default:
+                        print("error with response status: \(status)")
+                    }
+                }
+
+                if let data = response.result.value {
+
+                    let photoData = NSData(data: data)
+
+                    photo.photo = photoData
+
+                    self.appDelegate?.saveContext()
+
+                }
+
+            })
+
+        }
+
+    }
+
 }
-
-
-
-

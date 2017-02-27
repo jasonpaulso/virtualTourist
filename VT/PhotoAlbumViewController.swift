@@ -13,231 +13,249 @@ import SimpleAnimation
 
 private let reuseIdentifier = "collectionViewCell"
 
-
 class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, ShowsAlert {
-    
+
+    let appDelegate = UIApplication.shared.delegate as! AppDelegate
+
+    var context: NSManagedObjectContext?
+
     @IBOutlet var reloadLabel: UILabel!
 
     @IBOutlet var favoritesLabel: UILabel!
-    
-    @IBOutlet var reloadButton: UIButton!
-    
+
+//    @IBOutlet var reloadButton: UIButton!
+
+    @IBOutlet var reloadButton: UIToolbar!
     @IBOutlet var collectionView: UICollectionView!
-    
+
     @IBAction func loadMore(_ sender: Any) {
-        
-        flickrHandler.loadMorePhotos(currentPin: currentPin!)
-        
+
+        reloadImageCollection()
+
     }
-    
-    let downloadManager = DownloadManager()
-    
+
+    @IBAction func deletePinAction(_ sender: Any) {
+
+        context?.delete(currentPin!)
+
+        appDelegate.saveContext()
+
+        navigationController?.popToRootViewController(animated: true)
+
+    }
     override func viewDidLoad() {
-        
 
+        context = appDelegate.persistentContainer.viewContext
 
-        
-//        for photo in (fetchedResultsController?.fetchedObjects as! [Photo]) {
-//            downloadManager.addDownload(URL(string:photo.url!)!)
-//        }
+        if traitCollection.forceTouchCapability == .available {
 
-        
-        
-        
-        if (traitCollection.forceTouchCapability == .available) {
-            
-            registerForPreviewing(with: self, sourceView: collectionView)
-            
+            registerForPreviewing(with: self, sourceView: self.collectionView)
+
         }
-        
+
         self.title = passedTitle ?? currentPin?.name
-        
+
         super.viewDidLoad()
-        
+
         collectionView.delegate = self
-        
+
         collectionView.dataSource = self
-        
-        flickrHandler.currentPin = currentPin
-        
+
         loadPhotoData()
         
-        setUpLongPress()
-        
-        if predicate != nil {
-            
-            reloadButton.isHidden = true
-            
-            
-        } else {
-            
-            startCallToActionTimer()
-            
+        if fetchedResultsController?.fetchedObjects!.count == 0 {
+            showEmptyCollectionAlert()
+            context?.delete(currentPin!)
         }
-        
+
+        setUpLongPress()
+
         if predicate != nil && fetchedResultsController?.fetchedObjects?.count == 0 {
-            
+
             favoritesLabel.text = "You don't have any favorites yet. You can add to your favorites using Peek & Pop in the main image galleries."
         } else {
-            
+
             favoritesLabel.text = nil
-            
+
         }
 
     }
 
-    
+    override func viewWillAppear(_ animated: Bool) {
+        
+
+        if predicate != nil {
+
+            reloadButton.isHidden = true
+
+        } else if Int16(flickrHandler.page) == (currentPin?.numberOfPages)! {
+
+            self.reloadLabel.isHidden = true
+            self.reloadButton.isHidden = true
+
+        } else {
+
+            startCallToActionTimer()
+        }
+
+    }
+
     var insertedIndexPaths: [NSIndexPath]!
     var deletedIndexPaths: [NSIndexPath]!
     var updatedIndexPaths: [NSIndexPath]!
     var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>?
-    
+
     let flickrHandler = FlickrHandler()
-    
+
     var currentPin: Pin?
-    
+
     var timer: Timer!
-    
+
     var timerCounter = 0
-    
+
     var passedTitle: String?
-    
+
     var refreshControl = UIRefreshControl()
-    
+
+    var bounceCounter = 0
+
+    private func incrementBounceCounter() -> Bool {
+        bounceCounter += 1
+
+        if bounceCounter == 3 {
+            return false
+        }
+
+        return true
+    }
+
     private func startCallToActionTimer() {
-        
+
         self.createRefreshControl()
-        
-        self.timer = Timer.scheduledTimer(withTimeInterval: 180, repeats: true, block: { _ in
-            
+
+        self.collectionView.hop(toward: .bottom, amount: 0.15, duration: 4.0, delay: 1.0, completion: { _ in})
+
+        self.timer = Timer.scheduledTimer(withTimeInterval: 180, repeats: incrementBounceCounter(), block: { _ in
+
+            _ = self.incrementBounceCounter()
+
             self.collectionView.hop(toward: .bottom, amount: 0.15, duration: 4.0, delay: 1.0, completion: { _ in})
         })
     }
-    
-    
+
     private func setUpLongPress() {
-        
+
         let layout = GridCollectionViewLayout()
         layout.itemsPerRow = 3
         layout.itemSpacing = 2
         layout.itemHeightRatio = 3/4
-        
+
         collectionView?.collectionViewLayout = layout
-        
+
         let lpgr = UILongPressGestureRecognizer(target: self, action: #selector(viewPhotoDetail))
         lpgr.minimumPressDuration = 0.5
         lpgr.delaysTouchesBegan = true
         lpgr.delegate = self
         self.collectionView.addGestureRecognizer(lpgr)
-        
+
     }
-    
-    
+
     private func createRefreshControl() {
-   
+
         refreshControl = UIRefreshControl()
-        
+
         refreshControl.attributedTitle = NSAttributedString(string: " ↓ refreshing ↓ ")
-        
+
         refreshControl.addTarget(self, action: #selector(refreshStream), for: .valueChanged)
-        
+
         collectionView!.addSubview(refreshControl)
     }
-    
-    @objc private func refreshStream(){
-        
+
+    @objc private func refreshStream() {
+
+        reloadImageCollection()
+
+    }
+
+    private func reloadImageCollection() {
         reloadLabel.isHidden = true
 
-        flickrHandler.loadMorePhotos(currentPin: currentPin!)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-            
-            self.refreshControl.endRefreshing()
-            self.reloadLabel.isHidden = false
-            
+        self.reloadButton.isHidden = true
+
+        flickrHandler.loadMorePhotos(currentPin: currentPin!, withCompletion: { _, error in
+
+            DispatchQueue.main.async {
+                if error == nil {
+
+                    self.reloadLabel.isHidden = false
+                    self.reloadButton.isHidden = false
+                    self.refreshControl.endRefreshing()
+                    
+                    if self.fetchedResultsController?.fetchedObjects!.count == 0 {
+                        self.showEmptyCollectionAlert()
+                        self.context?.delete(self.currentPin!)
+                    }
+
+                }
+            }
+
+        })
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+
+        if timer != nil {
+
+            timer.invalidate()
+
         }
 
     }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        
-        if timer != nil {
-            
-            timer.invalidate()
-            
-        }
-        
-        
-    }
-    
-    
+
     var predicate: NSPredicate?
 
-    
     internal func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        
+
         let section = self.fetchedResultsController?.sections![section]
-        
+
         return section!.numberOfObjects
-        
+
     }
-    
+
     internal func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! CollectionViewCell
-        
-        cell.activityIndicator.center = cell.center
-        
-        cell.activityIndicator.hidesWhenStopped = true
-        
-        cell.addSubview(cell.activityIndicator)
-        
-        cell.activityIndicator.startAnimating()
-        
-        DispatchQueue.main.async {
-            
-            self.configureCell(cell: cell, atIndexPath: indexPath as NSIndexPath)
-            
-        }
-        
-        return cell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as? CollectionViewCell
+
+        cell?.configureIntialCell()
+
+        configureCell(cell: cell!, atIndexPath: indexPath as NSIndexPath)
+
+        return cell!
     }
-    
+
     private func configureCell(cell: CollectionViewCell, atIndexPath indexPath: NSIndexPath) {
-        
-        DispatchQueue.main.async {
 
-            let photo = self.fetchedResultsController?.object(at: indexPath as IndexPath) as! Photo
-        
-        if photo.photo != nil {
-        
-            cell.imageView!.image = UIImage(data: photo.photo! as Data)
-            
+        let photo = self.fetchedResultsController?.object(at: indexPath as IndexPath) as? Photo
+
+        if photo?.photo != nil {
+
+            cell.imageView!.image = UIImage(data: photo!.photo! as Data)
+
             cell.activityIndicator.stopAnimating()
-            
-            cell.tintColor = .clear
-            
+
         } else {
-            
-            cell.imageView.image = #imageLiteral(resourceName: "Smiley")
-            
+
+            flickrHandler.downloadImageData(photo: photo!)
         }
 
-        }
-
-        
     }
-    
-    
+
     internal func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        
-        let photo = fetchedResultsController?.fetchedObjects?[indexPath.row] as! Photo
 
-        showDeleteAlert(passedPhoto: photo)
-        
+        let photo = fetchedResultsController?.fetchedObjects?[indexPath.row] as? Photo
+
+        showDeleteAlert(passedPhoto: photo!)
+
     }
-    
-    
+
 }
-
-

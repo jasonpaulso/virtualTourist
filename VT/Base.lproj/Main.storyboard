@@ -29,17 +29,6 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="k9h-NN-c0w">
-                                <rect key="frame" x="94" y="644" width="188" height="30"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="188" id="QZY-Ct-bvT"/>
-                                    <constraint firstAttribute="height" constant="30" id="eX7-AS-Rfy"/>
-                                </constraints>
-                                <state key="normal" title="load a new collection"/>
-                                <connections>
-                                    <action selector="loadMore:" destination="rti-Fg-zIz" eventType="touchUpInside" id="Qwt-q6-M8A"/>
-                                </connections>
-                            </button>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Sd0-kP-qVk">
                                 <rect key="frame" x="0.0" y="62" width="375" height="585"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -90,24 +79,41 @@
                                     <outlet property="delegate" destination="rti-Fg-zIz" id="jSd-EX-rWF"/>
                                 </connections>
                             </collectionView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="e1P-rt-wWe">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                                <items>
+                                    <barButtonItem title="Load New Collection" id="R48-YU-SBo">
+                                        <connections>
+                                            <action selector="loadMore:" destination="rti-Fg-zIz" id="g6j-GS-u0r"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="0pc-3x-4LZ"/>
+                                    <barButtonItem title="Delete Pin" id="0lv-vO-St3">
+                                        <connections>
+                                            <action selector="deletePinAction:" destination="rti-Fg-zIz" id="h6Z-FM-UhV"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="d4F-y9-BGR" firstAttribute="centerX" secondItem="rZz-sa-wlH" secondAttribute="centerX" id="2kn-pR-D3X"/>
-                            <constraint firstItem="k9h-NN-c0w" firstAttribute="centerX" secondItem="rZz-sa-wlH" secondAttribute="centerX" id="E9y-XO-HSK"/>
-                            <constraint firstItem="k9h-NN-c0w" firstAttribute="centerX" secondItem="Sd0-kP-qVk" secondAttribute="centerX" id="F0y-4r-waB"/>
+                            <constraint firstItem="Sd0-kP-qVk" firstAttribute="centerX" secondItem="d4F-y9-BGR" secondAttribute="centerX" id="G6T-o7-y6V"/>
                             <constraint firstItem="d4F-y9-BGR" firstAttribute="top" secondItem="GgC-SP-ptd" secondAttribute="bottom" id="HLr-Bs-gUv"/>
-                            <constraint firstItem="k9h-NN-c0w" firstAttribute="top" secondItem="Sd0-kP-qVk" secondAttribute="bottom" constant="-3" id="L1C-Vw-oRH"/>
+                            <constraint firstItem="Sd0-kP-qVk" firstAttribute="trailing" secondItem="e1P-rt-wWe" secondAttribute="trailing" id="Hjs-6R-blk"/>
                             <constraint firstItem="Sd0-kP-qVk" firstAttribute="top" secondItem="GgC-SP-ptd" secondAttribute="bottom" constant="-2" id="URS-Gw-0hI"/>
                             <constraint firstItem="Sd0-kP-qVk" firstAttribute="leading" secondItem="rZz-sa-wlH" secondAttribute="leading" id="YY6-St-KXK"/>
                             <constraint firstItem="Sd0-kP-qVk" firstAttribute="top" secondItem="d4F-y9-BGR" secondAttribute="bottom" constant="-23" id="bkc-5M-n03"/>
-                            <constraint firstItem="k9h-NN-c0w" firstAttribute="bottom" secondItem="lkF-xw-zPO" secondAttribute="top" constant="7" id="pfj-0j-rcX"/>
+                            <constraint firstItem="e1P-rt-wWe" firstAttribute="bottom" secondItem="lkF-xw-zPO" secondAttribute="top" id="eeA-7v-GPg"/>
+                            <constraint firstItem="Sd0-kP-qVk" firstAttribute="leading" secondItem="e1P-rt-wWe" secondAttribute="leading" id="lsv-uF-MXg"/>
+                            <constraint firstAttribute="bottom" secondItem="Sd0-kP-qVk" secondAttribute="bottom" constant="20" symbolic="YES" id="tpR-pB-Fyq"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="collectionView" destination="Sd0-kP-qVk" id="D7E-bO-MCM"/>
                         <outlet property="favoritesLabel" destination="NgG-Kf-PJ7" id="IQK-sI-kJ1"/>
-                        <outlet property="reloadButton" destination="k9h-NN-c0w" id="N0r-XC-8qH"/>
+                        <outlet property="reloadButton" destination="e1P-rt-wWe" id="VuZ-mC-ccl"/>
                         <outlet property="reloadLabel" destination="d4F-y9-BGR" id="XP0-hg-uYb"/>
                         <segue destination="6dk-0c-ycF" kind="presentation" identifier="showImageViewControllerSegue" id="DLV-fz-5Xu"/>
                     </connections>
