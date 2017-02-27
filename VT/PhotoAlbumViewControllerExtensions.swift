@@ -38,7 +38,7 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
 
             if timer != nil {
 
-                timer.fire()
+                timer?.fire()
 
             }
 
@@ -113,7 +113,7 @@ extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
             }
 
         }, completion: { _ in
-
+            
         })
     }
 

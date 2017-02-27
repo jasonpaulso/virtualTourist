@@ -23,8 +23,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
 
     @IBOutlet var favoritesLabel: UILabel!
 
-//    @IBOutlet var reloadButton: UIButton!
-
     @IBOutlet var reloadButton: UIToolbar!
     @IBOutlet var collectionView: UICollectionView!
 
@@ -43,6 +41,10 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         navigationController?.popToRootViewController(animated: true)
 
     }
+    
+    
+    @IBOutlet var reloadButtonOutlet: UIBarButtonItem!
+    
     override func viewDidLoad() {
 
         context = appDelegate.persistentContainer.viewContext
@@ -63,8 +65,23 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
 
         loadPhotoData()
         
-    
         setUpLongPress()
+
+        if predicate != nil && (fetchedResultsController?.fetchedObjects?.count)! < 1 {
+
+            favoritesLabel.text = "You don't have any favorites yet. You can add to your favorites using Peek & Pop in the main image galleries."
+            
+        } else {
+
+            favoritesLabel.isHidden = true
+            favoritesLabel.text = "There is nothing more to see here. Go out and explore!"
+            
+        }
+        
+        if (fetchedResultsController?.fetchedObjects!.count)! < 1 {
+            self.setUpEmptyCollectionView()
+            
+        }
         
         if predicate != nil {
             
@@ -75,22 +92,18 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
             self.reloadLabel.isHidden = true
             self.reloadButton.isHidden = true
             
-        } else if predicate != nil && fetchedResultsController?.fetchedObjects?.count == nil {
-            
-            self.collectionView.isHidden = true
-            
-            favoritesLabel.text = "You don't have any favorites yet. You can add to your favorites using Peek & Pop in the main image galleries."
-            
-        } else if fetchedResultsController?.fetchedObjects?.count != nil {
+        } else if (fetchedResultsController?.fetchedObjects?.count)! > 1 {
             
             startCallToActionTimer()
-            favoritesLabel.isHidden = true
-            favoritesLabel.text = "There is nothing more to see here. Go out and explore!"
-
         }
-        
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        
+
+        
+
+    }
 
     var insertedIndexPaths: [NSIndexPath]!
     var deletedIndexPaths: [NSIndexPath]!
@@ -101,7 +114,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
 
     var currentPin: Pin?
 
-    var timer: Timer!
+    var timer: Timer?
 
     var timerCounter = 0
 
@@ -112,6 +125,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     var bounceCounter = 0
 
     private func incrementBounceCounter() -> Bool {
+        
         bounceCounter += 1
 
         if bounceCounter == 3 {
@@ -121,29 +135,25 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         return true
     }
     
-    private func setUpEmptyCollectionView() {
+    func setUpEmptyCollectionView() {
         
+        self.collectionView.willRemoveSubview(refreshControl)
         
-        collectionView.willRemoveSubview(refreshControl)
-        timer.invalidate()
-//        showEmptyCollectionAlert()
-//        favoritesLabel.text = "There is nothing more to see here. Go out and explore!"
+        if timer != nil {
+            
+            timer?.invalidate()
+        }
+        
         favoritesLabel.isHidden = false
-        reloadLabel.isHidden = true
-        reloadButton.isHidden = true
-        context?.delete(currentPin!)
+        
+        reloadButtonOutlet.isEnabled = false
+    
     }
 
     private func startCallToActionTimer() {
 
         self.createRefreshControl()
 
-        self.timer = Timer.scheduledTimer(withTimeInterval: 180, repeats: incrementBounceCounter(), block: { _ in
-
-            _ = self.incrementBounceCounter()
-
-            self.collectionView.hop(toward: .bottom, amount: 0.15, duration: 4.0, delay: 1.0, completion: { _ in})
-        })
     }
 
     private func setUpLongPress() {
@@ -194,7 +204,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
                     self.reloadButton.isHidden = false
                     self.refreshControl.endRefreshing()
                     
-                    if self.fetchedResultsController?.fetchedObjects!.count == nil {
+                    if (self.fetchedResultsController?.fetchedObjects!.count)! < 1 {
                         
                         self.setUpEmptyCollectionView()
                     }
@@ -209,7 +219,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
 
         if timer != nil {
 
-            timer.invalidate()
+            timer?.invalidate()
 
         }
 
@@ -221,13 +231,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
 
         let section = self.fetchedResultsController?.sections![section]
         
-        if section!.numberOfObjects == 0 {
-            
-            setUpEmptyCollectionView()
-            
-            
-        }
-
         return section!.numberOfObjects
 
     }

@@ -79,12 +79,12 @@
                                     <outlet property="delegate" destination="rti-Fg-zIz" id="jSd-EX-rWF"/>
                                 </connections>
                             </collectionView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="e1P-rt-wWe">
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="e1P-rt-wWe" userLabel="Tool Bar">
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <items>
                                     <barButtonItem title="Load New Collection" id="R48-YU-SBo">
                                         <connections>
-                                            <action selector="loadMore:" destination="rti-Fg-zIz" id="g6j-GS-u0r"/>
+                                            <action selector="loadMore:" destination="rti-Fg-zIz" id="2rK-BD-dt6"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="0pc-3x-4LZ"/>
@@ -114,6 +114,7 @@
                         <outlet property="collectionView" destination="Sd0-kP-qVk" id="D7E-bO-MCM"/>
                         <outlet property="favoritesLabel" destination="NgG-Kf-PJ7" id="IQK-sI-kJ1"/>
                         <outlet property="reloadButton" destination="e1P-rt-wWe" id="VuZ-mC-ccl"/>
+                        <outlet property="reloadButtonOutlet" destination="R48-YU-SBo" id="lZh-ck-9mZ"/>
                         <outlet property="reloadLabel" destination="d4F-y9-BGR" id="XP0-hg-uYb"/>
                         <segue destination="6dk-0c-ycF" kind="presentation" identifier="showImageViewControllerSegue" id="DLV-fz-5Xu"/>
                     </connections>
