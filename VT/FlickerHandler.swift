@@ -15,8 +15,6 @@ public let reloadNotification = "reload"
 
 class FlickrHandler {
 
-    //    var currentPin: Pin?
-
     let appDelegate = UIApplication.shared.delegate as? AppDelegate
 
     var page = 1
