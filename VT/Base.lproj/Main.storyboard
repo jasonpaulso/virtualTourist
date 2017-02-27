@@ -30,7 +30,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Sd0-kP-qVk">
-                                <rect key="frame" x="0.0" y="62" width="375" height="585"/>
+                                <rect key="frame" x="0.0" y="62" width="375" height="561"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="0.0" id="7DQ-4R-4hh">
                                     <size key="itemSize" width="133" height="133"/>
@@ -39,7 +39,7 @@
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <label key="backgroundView" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="NgG-Kf-PJ7">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="585"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="561"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="textColor"/>
@@ -107,7 +107,7 @@
                             <constraint firstItem="Sd0-kP-qVk" firstAttribute="top" secondItem="d4F-y9-BGR" secondAttribute="bottom" constant="-23" id="bkc-5M-n03"/>
                             <constraint firstItem="e1P-rt-wWe" firstAttribute="bottom" secondItem="lkF-xw-zPO" secondAttribute="top" id="eeA-7v-GPg"/>
                             <constraint firstItem="Sd0-kP-qVk" firstAttribute="leading" secondItem="e1P-rt-wWe" secondAttribute="leading" id="lsv-uF-MXg"/>
-                            <constraint firstAttribute="bottom" secondItem="Sd0-kP-qVk" secondAttribute="bottom" constant="20" symbolic="YES" id="tpR-pB-Fyq"/>
+                            <constraint firstAttribute="bottom" secondItem="Sd0-kP-qVk" secondAttribute="bottom" constant="44" id="tpR-pB-Fyq"/>
                         </constraints>
                     </view>
                     <connections>

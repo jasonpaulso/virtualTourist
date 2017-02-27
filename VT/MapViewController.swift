@@ -36,7 +36,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
     }
 
     override func viewDidLoad() {
-
+        
         super.viewDidLoad()
 
         context = appDelegate?.persistentContainer.viewContext
@@ -48,36 +48,63 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
         gestureRecognizer.numberOfTouchesRequired = 1
 
         mapView.addGestureRecognizer(gestureRecognizer)
-
+        
+        if UserDefaults.standard.dictionary(forKey: "mapLocation") != nil {
+            
+            setMapRegion()
+            
+        }
+        
     }
-
+    
     override func viewWillAppear(_ animated: Bool) {
 
         self.fetchPins()
 
-//        DispatchQueue.main.async {
-//            
-//            if self.mapView.selectedAnnotations.count != 0 {
-//                
-//                for item in self.mapView.selectedAnnotations {
-//
-//                    self.mapView.deselectAnnotation(item, animated: false)
-//                }
-//            }
-//            
-//        }
-
     }
-
+    
+    
     override func viewDidDisappear(_ animated: Bool) {
         self.mapView.removeAnnotations(mapView.annotations)
+
     }
 
     let flickrHandler = FlickrHandler()
     let modelHandler = PhotoPinModelHandler()
     var annotation: MKPointAnnotation!
+    
+    internal func mapView(_ mapView: MKMapView, regionDidChangeAnimated animated: Bool) {
+        
+        let mapLocation = [
+            
+            "longitude" : mapView.region.center.longitude ,
+            "latitude" : mapView.region.center.latitude,
+            "longitudeDelta": mapView.region.span.longitudeDelta,
+            "latitudeDelta": mapView.region.span.latitudeDelta
+            
+        ]
+        
+        appDelegate?.mapLocation = mapLocation
+    }
+    
+    private func setMapRegion() {
+        
+        let mapLocation = UserDefaults.standard.dictionary(forKey: "mapLocation")!
+        
+        let longitude = mapLocation["longitude"] as! CLLocationDegrees
+        let latitude = mapLocation["latitude"] as! CLLocationDegrees
+        let longitudeDelta = mapLocation["longitudeDelta"] as! CLLocationDegrees
+        let latitudeDelta = mapLocation["latitudeDelta"] as! CLLocationDegrees
+        
+        let center = CLLocationCoordinate2DMake(latitude, longitude)
+        let span = MKCoordinateSpanMake(longitudeDelta, latitudeDelta)
+        let region = MKCoordinateRegionMake(center, span)
+        
+        mapView.setRegion(region, animated: true)
+    }
 
-    func fetchPins() {
+
+    private func fetchPins() {
 
         let fetchRequest: NSFetchRequest<Pin> = Pin.fetchRequest()
 
@@ -233,5 +260,24 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
 
         }
     }
+    
+    
+    func resetCallouts() {
+        
+        DispatchQueue.main.async {
+
+            if self.mapView.selectedAnnotations.count != 0 {
+
+                for item in self.mapView.selectedAnnotations {
+
+                    self.mapView.deselectAnnotation(item, animated: false)
+                }
+            }
+            
+        }
+
+    }
 
 }
+
+
