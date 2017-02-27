@@ -28,7 +28,7 @@
 		4431DBBC55D0B1A721408D90 /* Pods-VT.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VT.release.xcconfig"; path = "Pods/Target Support Files/Pods-VT/Pods-VT.release.xcconfig"; sourceTree = "<group>"; };
 		550C94BCBFFE98BF89A4F9AC /* Pods_VT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E40C9B61E5E33CA00E74AB0 /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAlbumViewController.swift; sourceTree = "<group>"; };
-		9E758FB41E591E6B00865E75 /* VT.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VT.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9E758FB41E591E6B00865E75 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E758FB71E591E6B00865E75 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		9E758FBC1E591E6B00865E75 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		9E758FBF1E591E6B00865E75 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
@@ -67,7 +67,7 @@
 		9E758FAB1E591E6B00865E75 = {
 			isa = PBXGroup;
 			children = (
-				9E758FB61E591E6B00865E75 /* VT */,
+				9E758FB61E591E6B00865E75 /* VirtualTourist */,
 				9E758FB51E591E6B00865E75 /* Products */,
 				E1D06DB5D80BE52C0366BAB2 /* Pods */,
 				33DE9DD48891A5144C743A5D /* Frameworks */,
@@ -77,12 +77,12 @@
 		9E758FB51E591E6B00865E75 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9E758FB41E591E6B00865E75 /* VT.app */,
+				9E758FB41E591E6B00865E75 /* VirtualTourist.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		9E758FB61E591E6B00865E75 /* VT */ = {
+		9E758FB61E591E6B00865E75 /* VirtualTourist */ = {
 			isa = PBXGroup;
 			children = (
 				9E758FB71E591E6B00865E75 /* AppDelegate.swift */,
@@ -93,6 +93,7 @@
 				9E9941131E610FD6001325FD /* Views */,
 				9E9941121E610FAC001325FD /* View Controllers */,
 			);
+			name = VirtualTourist;
 			path = VT;
 			sourceTree = "<group>";
 		};
@@ -155,9 +156,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9E758FB31E591E6B00865E75 /* VT */ = {
+		9E758FB31E591E6B00865E75 /* VirtualTourist */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9E758FC91E591E6B00865E75 /* Build configuration list for PBXNativeTarget "VT" */;
+			buildConfigurationList = 9E758FC91E591E6B00865E75 /* Build configuration list for PBXNativeTarget "VirtualTourist" */;
 			buildPhases = (
 				46F31738C8B5D06D2388B85D /* [CP] Check Pods Manifest.lock */,
 				9E758FB01E591E6B00865E75 /* Sources */,
@@ -170,9 +171,9 @@
 			);
 			dependencies = (
 			);
-			name = VT;
+			name = VirtualTourist;
 			productName = VT;
-			productReference = 9E758FB41E591E6B00865E75 /* VT.app */;
+			productReference = 9E758FB41E591E6B00865E75 /* VirtualTourist.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -192,7 +193,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 9E758FAF1E591E6B00865E75 /* Build configuration list for PBXProject "VT" */;
+			buildConfigurationList = 9E758FAF1E591E6B00865E75 /* Build configuration list for PBXProject "VirtualTourist" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -205,7 +206,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9E758FB31E591E6B00865E75 /* VT */,
+				9E758FB31E591E6B00865E75 /* VirtualTourist */,
 			);
 		};
 /* End PBXProject section */
@@ -431,7 +432,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9E758FAF1E591E6B00865E75 /* Build configuration list for PBXProject "VT" */ = {
+		9E758FAF1E591E6B00865E75 /* Build configuration list for PBXProject "VirtualTourist" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9E758FC71E591E6B00865E75 /* Debug */,
@@ -440,7 +441,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9E758FC91E591E6B00865E75 /* Build configuration list for PBXNativeTarget "VT" */ = {
+		9E758FC91E591E6B00865E75 /* Build configuration list for PBXNativeTarget "VirtualTourist" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9E758FCA1E591E6B00865E75 /* Debug */,
