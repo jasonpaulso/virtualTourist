@@ -63,7 +63,7 @@ extension ShowsAlert where Self: UIViewController {
         
         let okAction = UIAlertAction(title: "OK", style: .default, handler: { action in
             
-            self.navigationController?.popToRootViewController(animated: true)
+            _ = self.navigationController?.popToRootViewController(animated: true)
             
         })
         

@@ -38,7 +38,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
 
         appDelegate.saveContext()
 
-        navigationController?.popToRootViewController(animated: true)
+        _ = navigationController?.popToRootViewController(animated: true)
 
     }
     
