@@ -9,7 +9,5 @@ target 'VirtualTourist’ do
     pod 'Alamofire'
     pod 'BSGridCollectionViewLayout'
     pod 'ImageScrollView'
-    pod ‘SimpleAnimation’
-    pod ‘AlamofireImage’
  
 end
