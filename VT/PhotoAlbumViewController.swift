@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 import BSGridCollectionViewLayout
-import SimpleAnimation
+
 
 private let reuseIdentifier = "collectionViewCell"
 

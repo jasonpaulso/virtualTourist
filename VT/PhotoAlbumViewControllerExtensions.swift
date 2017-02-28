@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 import BSGridCollectionViewLayout
-import SimpleAnimation
+
 
 extension PhotoAlbumViewController: NSFetchedResultsControllerDelegate {
 
