@@ -20,11 +20,11 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     var context: NSManagedObjectContext?
 
     @IBOutlet var reloadLabel: UILabel!
-
     @IBOutlet var favoritesLabel: UILabel!
-
     @IBOutlet var reloadButton: UIToolbar!
     @IBOutlet var collectionView: UICollectionView!
+    @IBOutlet var reloadButtonOutlet: UIBarButtonItem!
+    @IBOutlet weak var deletePinButtonOutlet: UIBarButtonItem!
 
     @IBAction func loadMore(_ sender: Any) {
 
@@ -43,9 +43,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     }
     
     
-    @IBOutlet var reloadButtonOutlet: UIBarButtonItem!
-    
-    @IBOutlet weak var deletePinButtonOutlet: UIBarButtonItem!
+
     
     override func viewDidLoad() {
 
@@ -60,10 +58,6 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         self.title = passedTitle ?? currentPin?.name
 
         super.viewDidLoad()
-
-        collectionView.delegate = self
-
-        collectionView.dataSource = self
 
         loadPhotoData()
         
@@ -144,7 +138,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     
     func setUpEmptyCollectionView() {
         
-        self.collectionView.willRemoveSubview(refreshControl)
+        collectionView.willRemoveSubview(refreshControl)
         
         if timer != nil {
             
@@ -152,14 +146,12 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         }
         
         favoritesLabel.isHidden = false
-        
-//        reloadButtonOutlet.isEnabled = false
     
     }
 
     private func startCallToActionTimer() {
 
-        self.createRefreshControl()
+        createRefreshControl()
 
     }
 
@@ -176,7 +168,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         lpgr.minimumPressDuration = 0.5
         lpgr.delaysTouchesBegan = true
         lpgr.delegate = self
-        self.collectionView.addGestureRecognizer(lpgr)
+        collectionView.addGestureRecognizer(lpgr)
 
     }
 
@@ -223,6 +215,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     }
 
     override func viewDidDisappear(_ animated: Bool) {
+        
+        super.viewDidDisappear(true)
 
         if timer != nil {
 
@@ -236,7 +230,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
 
     internal func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 
-        let section = self.fetchedResultsController?.sections![section]
+        let section = fetchedResultsController?.sections![section]
         
         return section!.numberOfObjects
 
@@ -255,7 +249,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
 
     private func configureCell(cell: CollectionViewCell, atIndexPath indexPath: NSIndexPath) {
 
-        let photo = self.fetchedResultsController?.object(at: indexPath as IndexPath) as? Photo
+        let photo = fetchedResultsController?.object(at: indexPath as IndexPath) as? Photo
 
         if photo?.photo != nil {
 

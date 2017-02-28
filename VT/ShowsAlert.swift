@@ -51,7 +51,7 @@ extension ShowsAlert where Self: UIViewController {
             
             alertController.addAction(cancelAction)
 
-            self.present(alertController, animated: true, completion: nil)
+            present(alertController, animated: true, completion: nil)
 
         }
 
@@ -69,7 +69,7 @@ extension ShowsAlert where Self: UIViewController {
         
         alert.addAction(okAction)
         
-        self.present(alert, animated: true, completion: nil)
+        present(alert, animated: true, completion: nil)
     }
     
     

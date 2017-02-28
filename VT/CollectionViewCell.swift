@@ -19,15 +19,15 @@ class CollectionViewCell: UICollectionViewCell {
 
     func configureIntialCell() {
 
-        self.imageView.image = #imageLiteral(resourceName: "placeholder")
+        imageView.image = #imageLiteral(resourceName: "placeholder")
 
-        self.activityIndicator.center = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
+        activityIndicator.center = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
         
-        self.activityIndicator.startAnimating()
+        activityIndicator.startAnimating()
 
-        self.activityIndicator.hidesWhenStopped = true
+        activityIndicator.hidesWhenStopped = true
 
-        self.addSubview(self.activityIndicator)
+        addSubview(self.activityIndicator)
 
     }
 

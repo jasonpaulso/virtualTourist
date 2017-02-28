@@ -29,7 +29,7 @@ class PinAnnotation: MKAnnotationView, MKAnnotation {
 
     func setCoordinate(newCoordinate: CLLocationCoordinate2D) {
 
-        self.coord = newCoordinate
+        coord = newCoordinate
 
     }
 }

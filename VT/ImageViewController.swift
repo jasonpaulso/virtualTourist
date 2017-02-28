@@ -17,7 +17,7 @@ class ImageViewController: UIViewController, ShowsAlert {
     @IBOutlet weak var imageScrollView: ImageScrollView!
 
     @IBAction func closeModalAction(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
 
     @IBAction func deleteImageAction(_ sender: Any) {
@@ -34,7 +34,7 @@ class ImageViewController: UIViewController, ShowsAlert {
         super.viewDidLoad()
         setUpImageScrollView()
 
-        self.navigationItem.title = selectedImage?.text
+        navigationItem.title = selectedImage?.text
         if (selectedImage?.isFavorite)! {
             addToFavoritesButton.isEnabled = false
         }

@@ -41,7 +41,7 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
 
         context = appDelegate?.persistentContainer.viewContext
 
-        mapView.delegate = self
+//        mapView.delegate = self
 
         let gestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(addAnnotation(gestureRecognizer:)))
 
@@ -58,14 +58,15 @@ class MapViewController: UIViewController, MKMapViewDelegate, UIGestureRecognize
     }
     
     override func viewWillAppear(_ animated: Bool) {
-
-        self.fetchPins()
+        super.viewWillAppear(true)
+        fetchPins()
 
     }
     
     
     override func viewDidDisappear(_ animated: Bool) {
-        self.mapView.removeAnnotations(mapView.annotations)
+        super.viewDidDisappear(true)
+        mapView.removeAnnotations(mapView.annotations)
 
     }
 
