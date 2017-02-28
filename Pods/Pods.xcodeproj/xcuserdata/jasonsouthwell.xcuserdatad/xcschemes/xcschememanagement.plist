@@ -24,7 +24,7 @@
 			<key>isShown</key>
 			<false/>
 		</dict>
-		<key>Pods-VT.xcscheme</key>
+		<key>Pods-VirtualTourist.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -37,7 +37,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>3DD3EBCBFEC89A4AF74141D5EB785277</key>
+		<key>3B2C2D88D6130FE6B691EAE282A43B69</key>
 		<dict>
 			<key>primary</key>
 			<true/>
@@ -52,12 +52,12 @@
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>9EFE4C70245EE2857D336B8B9FA4E825</key>
+		<key>96249A446139123FB44A2C9F5D108743</key>
 		<dict>
 			<key>primary</key>
 			<true/>
 		</dict>
-		<key>BA3FDF84CB338AB5A284711EEA99E79A</key>
+		<key>9EFE4C70245EE2857D336B8B9FA4E825</key>
 		<dict>
 			<key>primary</key>
 			<true/>

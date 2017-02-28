@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0830"
+   LastUpgradeVersion = "0700"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3DD3EBCBFEC89A4AF74141D5EB785277"
-               BuildableName = "Pods_VT.framework"
-               BlueprintName = "Pods-VT"
+               BlueprintIdentifier = "96249A446139123FB44A2C9F5D108743"
+               BuildableName = "Pods_VirtualTourist.framework"
+               BlueprintName = "Pods-VirtualTourist"
                ReferencedContainer = "container:Pods.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,9 +45,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "3DD3EBCBFEC89A4AF74141D5EB785277"
-            BuildableName = "Pods_VT.framework"
-            BlueprintName = "Pods-VT"
+            BlueprintIdentifier = "96249A446139123FB44A2C9F5D108743"
+            BuildableName = "Pods_VirtualTourist.framework"
+            BlueprintName = "Pods-VirtualTourist"
             ReferencedContainer = "container:Pods.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

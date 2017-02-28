@@ -20,13 +20,16 @@
 		9E9941161E61171C001325FD /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9941151E61171C001325FD /* ModelController.swift */; };
 		9E9941181E611761001325FD /* ShowsAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9941171E611761001325FD /* ShowsAlert.swift */; };
 		9E99411A1E611A49001325FD /* PhotoAlbumViewControllerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9941191E611A49001325FD /* PhotoAlbumViewControllerExtensions.swift */; };
-		BE61B1AFA9476B0D24C96267 /* Pods_VT.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 550C94BCBFFE98BF89A4F9AC /* Pods_VT.framework */; };
+		A4E9CA8FC0A0FE3C6192DFC2 /* Pods_VirtualTourist.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93736F449C800E41F6975E0D /* Pods_VirtualTourist.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		0918F61ACB0A6C68E4D8B792 /* Pods-VT.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VT.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VT/Pods-VT.debug.xcconfig"; sourceTree = "<group>"; };
+		2DB050187EF09BE69EE9B734 /* Pods-VirtualTourist.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VirtualTourist.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VirtualTourist/Pods-VirtualTourist.debug.xcconfig"; sourceTree = "<group>"; };
 		4431DBBC55D0B1A721408D90 /* Pods-VT.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VT.release.xcconfig"; path = "Pods/Target Support Files/Pods-VT/Pods-VT.release.xcconfig"; sourceTree = "<group>"; };
 		550C94BCBFFE98BF89A4F9AC /* Pods_VT.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VT.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		585F05D980317DF3C87F7134 /* Pods-VirtualTourist.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VirtualTourist.release.xcconfig"; path = "Pods/Target Support Files/Pods-VirtualTourist/Pods-VirtualTourist.release.xcconfig"; sourceTree = "<group>"; };
+		93736F449C800E41F6975E0D /* Pods_VirtualTourist.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_VirtualTourist.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E40C9B61E5E33CA00E74AB0 /* PhotoAlbumViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PhotoAlbumViewController.swift; sourceTree = "<group>"; };
 		9E758FB41E591E6B00865E75 /* VirtualTourist.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VirtualTourist.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9E758FB71E591E6B00865E75 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -49,7 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BE61B1AFA9476B0D24C96267 /* Pods_VT.framework in Frameworks */,
+				A4E9CA8FC0A0FE3C6192DFC2 /* Pods_VirtualTourist.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				550C94BCBFFE98BF89A4F9AC /* Pods_VT.framework */,
+				93736F449C800E41F6975E0D /* Pods_VirtualTourist.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -149,6 +153,8 @@
 			children = (
 				0918F61ACB0A6C68E4D8B792 /* Pods-VT.debug.xcconfig */,
 				4431DBBC55D0B1A721408D90 /* Pods-VT.release.xcconfig */,
+				2DB050187EF09BE69EE9B734 /* Pods-VirtualTourist.debug.xcconfig */,
+				585F05D980317DF3C87F7134 /* Pods-VirtualTourist.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -236,7 +242,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VT/Pods-VT-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VirtualTourist/Pods-VirtualTourist-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		46F31738C8B5D06D2388B85D /* [CP] Check Pods Manifest.lock */ = {
@@ -266,7 +272,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VT/Pods-VT-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VirtualTourist/Pods-VirtualTourist-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -401,7 +407,7 @@
 		};
 		9E758FCA1E591E6B00865E75 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0918F61ACB0A6C68E4D8B792 /* Pods-VT.debug.xcconfig */;
+			baseConfigurationReference = 2DB050187EF09BE69EE9B734 /* Pods-VirtualTourist.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -417,7 +423,7 @@
 		};
 		9E758FCB1E591E6B00865E75 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4431DBBC55D0B1A721408D90 /* Pods-VT.release.xcconfig */;
+			baseConfigurationReference = 585F05D980317DF3C87F7134 /* Pods-VirtualTourist.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
