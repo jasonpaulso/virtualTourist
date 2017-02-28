@@ -22,7 +22,7 @@ class CollectionViewCell: UICollectionViewCell {
         self.imageView.image = #imageLiteral(resourceName: "placeholder")
 
         self.activityIndicator.center = CGPoint(x: self.frame.size.width/2, y: self.frame.size.height/2)
-
+        
         self.activityIndicator.startAnimating()
 
         self.activityIndicator.hidesWhenStopped = true

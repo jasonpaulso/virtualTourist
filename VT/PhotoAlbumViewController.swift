@@ -99,6 +99,14 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
             
             startCallToActionTimer()
         }
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(didRotate(notification:)), name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
+    }
+    
+    
+    func didRotate(notification: NSNotification)
+    {
+        collectionView.reloadData()
     }
 
 
