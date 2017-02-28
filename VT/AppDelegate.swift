@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  VT
+//  VirtualTourist
 //
 //  Created by Jason Southwell on 2/18/17.
 //  Copyright © 2017 Jason Southwell. All rights reserved.
