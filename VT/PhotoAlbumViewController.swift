@@ -45,6 +45,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
     
     @IBOutlet var reloadButtonOutlet: UIBarButtonItem!
     
+    @IBOutlet weak var deletePinButtonOutlet: UIBarButtonItem!
+    
     override func viewDidLoad() {
 
         context = appDelegate.persistentContainer.viewContext
@@ -86,6 +88,7 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         if predicate != nil {
             
             reloadButtonOutlet.isEnabled = false
+            deletePinButtonOutlet.isEnabled = false
             
         } else if Int16(flickrHandler.page) == (currentPin?.numberOfPages)! {
             
@@ -98,12 +101,8 @@ class PhotoAlbumViewController: UIViewController, UICollectionViewDelegate, UICo
         }
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        
 
-        
 
-    }
 
     var insertedIndexPaths: [NSIndexPath]!
     var deletedIndexPaths: [NSIndexPath]!
